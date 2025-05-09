@@ -22,8 +22,7 @@ public class Usuario {
     private String password;
 
     @Column(nullable = false)
-    private String rol;
+    private String rol; // ADMIN o USUARIO
 
-    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 }
