@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Expedientes</title>
+</head>
+<body>
+<h2>Listado de Expedientes</h2>
+<a th:href="@{/expedientes/nuevo}">Nuevo Expediente</a>
+<table border="1">
+    <tr>
+        <th>Número</th>
+        <th>Descripción</th>
+        <th>Fecha</th>
+        <th>Ubicación</th>
+        <th>Creador</th>
+        <th>Acciones</th>
+    </tr>
+    <tr th:each="exp : ${expedientes}">
+        <td th:text="${exp.numero}">N°</td>
+        <td th:text="${exp.descripcion}">Desc</td>
+        <td th:text="${exp.fecha}">Fecha</td>
+        <td th:text="${exp.ubicacionFisica}">Ubic</td>
+        <td th:text="${exp.creadoPor}">User</td>
+        <td>
+            <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}">Editar</a>
+            <a th:href="@{/expedientes/eliminar/{id}(id=${exp.id})}">Eliminar</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
