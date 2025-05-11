@@ -6,6 +6,14 @@
 <body>
 <h2>Listado de Expedientes</h2>
 <a th:href="@{/expedientes/nuevo}">Nuevo Expediente</a>
+
+<!-- Formulario de búsqueda -->
+<form action="#" method="get">
+    <label for="numero">Buscar por Número:</label>
+    <input type="text" id="numero" name="numero">
+    <button type="submit">Buscar</button>
+</form>
+
 <table border="1">
     <tr>
         <th>Número</th>
