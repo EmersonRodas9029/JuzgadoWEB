@@ -7,8 +7,10 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "expedientes")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Expediente {
 
     @Id
@@ -25,7 +27,7 @@ public class Expediente {
 
     private String ubicacionFisica;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_creador_id")
     private Usuario usuarioCreador;
 }

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/expedientes")
@@ -24,7 +25,9 @@ public class ExpedienteController {
 
     @GetMapping("/nuevo")
     public String formularioCrear(Model model) {
-        model.addAttribute("expediente", new DtoExpedienteRequest());
+        // Usamos valores por defecto ya que record no tiene constructor vacío
+        DtoExpedienteRequest expedienteVacio = new DtoExpedienteRequest("", "", LocalDate.now(), "");
+        model.addAttribute("expediente", expedienteVacio);
         return "expedientes/formulario";
     }
 

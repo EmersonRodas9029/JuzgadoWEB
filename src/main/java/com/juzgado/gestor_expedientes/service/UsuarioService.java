@@ -10,17 +10,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public void registrar(DtoRegistroUsuario dto) {
         Usuario user = new Usuario();
-        user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRol(dto.getRol());
+        user.setUsername(dto.username());
+        user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setRol(dto.rol());
         usuarioRepository.save(user);
     }
 }
