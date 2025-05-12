@@ -7,13 +7,22 @@
 <h2 th:text="${#strings.isEmpty(id) ? 'Nuevo Expediente' : 'Editar Expediente'}"></h2>
 <form th:action="${#strings.isEmpty(id) ? '/expedientes' : '/expedientes/actualizar/' + id}" method="post">
     <label>Número:</label>
-    <input type="text" name="numero" th:value="${expediente.numero}" required/><br/>
+    <input type="text"
+           name="numero"
+           th:value="${expediente.numero}"
+           style="text-transform: uppercase;"
+           oninput="this.value = this.value.toUpperCase()"
+           required/><br/>
+
     <label>Descripción:</label>
     <textarea name="descripcion" th:text="${expediente.descripcion}"></textarea><br/>
+
     <label>Fecha:</label>
     <input type="date" name="fecha" th:value="${expediente.fecha}" required/><br/>
+
     <label>Ubicación Física:</label>
     <input type="text" name="ubicacionFisica" th:value="${expediente.ubicacionFisica}"/><br/>
+
     <button type="submit">Guardar</button>
 </form>
 </body>
