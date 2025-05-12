@@ -2,9 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Expedientes</title>
+    <style>
+        table {
+            table-layout: fixed;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        th:nth-child(2), td:nth-child(2) {
+            max-width: 200px; /* límite para la columna de descripción */
+        }
+        th:nth-child(1), td:nth-child(1),
+        th:nth-child(3), td:nth-child(3),
+        th:nth-child(4), td:nth-child(4),
+        th:nth-child(5), td:nth-child(5),
+        th:nth-child(6), td:nth-child(6) {
+            max-width: 120px;
+        }
+    </style>
 </head>
 <body>
 <h2>Listado de Expedientes</h2>
+
 <a th:href="@{/expedientes/nuevo}">Nuevo Expediente</a>
 
 <!-- Formulario de búsqueda -->
@@ -14,9 +40,9 @@
     <button type="submit">Buscar</button>
 </form>
 
-<table border="1">
+<table>
     <tr>
-        <th>Número</th>
+        <th>Número de Expediente</th>
         <th>Descripción</th>
         <th>Fecha</th>
         <th>Ubicación</th>
