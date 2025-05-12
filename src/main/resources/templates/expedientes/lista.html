@@ -1,66 +1,129 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <title>Expedientes</title>
+    <meta charset="UTF-8">
+    <title>Listado de Expedientes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
-        table {
-            table-layout: fixed;
-            width: 100%;
-            border-collapse: collapse;
+        /* Animación al cargar */
+        @keyframes fade-in-down {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            white-space: normal;
+
+        .animate-fade-in-down {
+            animation: fade-in-down 0.6s ease-out;
         }
-        th:nth-child(2), td:nth-child(2) {
-            max-width: 200px; /* límite para la columna de descripción */
+
+        /* Animación de clic */
+        @keyframes click-bounce {
+            0%   { transform: scale(0.97) rotate(0deg); }
+            50%  { transform: scale(0.94) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0deg); }
         }
-        th:nth-child(1), td:nth-child(1),
-        th:nth-child(3), td:nth-child(3),
-        th:nth-child(4), td:nth-child(4),
-        th:nth-child(5), td:nth-child(5),
-        th:nth-child(6), td:nth-child(6) {
-            max-width: 120px;
+
+        .btn-click {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-click:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-click:active {
+            animation: click-bounce 0.3s ease forwards;
+        }
+
+        /* Animación de tabla completa */
+        .fade-table {
+            animation: fade-in-down 0.8s ease-in-out;
         }
     </style>
 </head>
-<body>
-<h2>Listado de Expedientes</h2>
+<body class="bg-gradient-to-br from-blue-100 to-blue-300 min-h-screen p-8 font-sans">
 
-<a th:href="@{/expedientes/nuevo}">Nuevo Expediente</a>
+<div class="max-w-7xl mx-auto bg-white/90 backdrop-blur-md shadow-xl rounded-2xl p-8 space-y-6 animate-fade-in-down">
 
-<!-- Formulario de búsqueda -->
-<form action="#" method="get">
-    <label for="numero">Buscar por Número:</label>
-    <input type="text" id="numero" name="numero">
-    <button type="submit">Buscar</button>
-</form>
+    <!-- Encabezado -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-blue-900">Listado de Expedientes</h1>
+            <p class="text-blue-700 italic text-sm">Juzgado Segundo de lo Civil y Mercantil · El Salvador</p>
+        </div>
+        <a th:href="@{/expedientes/nuevo}"
+           class="btn-click bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
+           title="Crear nuevo expediente">
+            <i class="fas fa-plus-circle mr-2"></i> Nuevo Expediente
+        </a>
+    </div>
 
-<table>
-    <tr>
-        <th>Número de Expediente</th>
-        <th>Descripción</th>
-        <th>Fecha</th>
-        <th>Ubicación</th>
-        <th>Bodega</th>
-        <th>Creador</th> <!-- Nueva columna para la bodega -->
-        <th>Acciones</th>
-    </tr>
-    <tr th:each="exp : ${expedientes}">
-        <td th:text="${exp.numero}">N°</td>
-        <td th:text="${exp.descripcion}">Desc</td>
-        <td th:text="${exp.fecha}">Fecha</td>
-        <td th:text="${exp.ubicacionFisica}">Ubic</td>
-        <td th:text="${exp.creadoPor}">User</td>
-        <td th:text="${exp.bodega}">Bodega</td> <!-- Mostrar bodega -->
-        <td>
-            <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}">Editar</a>
-            <a th:href="@{/expedientes/eliminar/{id}(id=${exp.id})}">Eliminar</a>
-        </td>
-    </tr>
-</table>
+    <!-- Formulario de búsqueda -->
+    <form action="#" method="get" class="flex items-center gap-4">
+        <label for="numero" class="text-blue-800 font-medium">Buscar por Número:</label>
+        <input type="text" id="numero" name="numero"
+               class="px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-400 w-64"
+               placeholder="Ej. 0000-00-AA">
+        <button type="submit"
+                class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md">
+            <i class="fas fa-search mr-1"></i> Buscar
+        </button>
+    </form>
 
+    <!-- Condición para verificar si hay expedientes encontrados -->
+    <div th:if="${expedientes != null and not #lists.isEmpty(expedientes)}" class="fade-table">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-blue-900 border border-blue-200 rounded-lg">
+                <thead>
+                <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider">
+                    <th class="px-4 py-3">Número de Expedientes</th>
+                    <th class="px-4 py-3 w-64">Descripción</th>
+                    <th class="px-4 py-3">Fecha</th>
+                    <th class="px-4 py-3">Caja</th>
+                    <th class="px-4 py-3">Creador</th>
+                    <th class="px-4 py-3">Bodega</th>
+                    <th class="px-4 py-3 text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="exp : ${expedientes}" class="even:bg-blue-50 odd:bg-white border-b border-blue-100 hover:bg-blue-100 transition animate-fade-in-down">
+                    <td class="px-4 py-3" th:text="${exp.numero}">N°</td>
+                    <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.descripcion}">Descripción</td>
+                    <td class="px-4 py-3" th:text="${exp.fecha}">Fecha</td>
+                    <td class="px-4 py-3" th:text="${exp.ubicacionFisica}">Ubicación</td>
+                    <td class="px-4 py-3" th:text="${exp.bodega}">Bodega</td>
+                    <td class="px-4 py-3" th:text="${exp.creadoPor}">Usuario</td>
+                    <td class="px-4 py-3 text-center space-x-3">
+                        <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"
+                           class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md"
+                           title="Editar expediente">
+                            <i class="fas fa-pencil-alt mr-1"></i> Editar
+                        </a>
+                        <a th:href="@{/expedientes/eliminar/{id}(id=${exp.id})}"
+                           class="btn-click bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md"
+                           title="Eliminar expediente">
+                            <i class="fas fa-trash-alt mr-1"></i> Eliminar
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mensaje si no se encontraron resultados -->
+    <div th:if="${expedientes == null or #lists.isEmpty(expedientes)}" class="text-center text-xl text-red-600">
+        No se encontraron expedientes con ese número.
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-xs text-blue-600 italic pt-4">
+        © 2025 Juzgado Segundo de lo Civil y Mercantil · El Salvador <br>
+        © Desarrollado por Emerson Rodas y Mario Galdamez
+    </div>
+
+</div>
+
+</body>
+</html>

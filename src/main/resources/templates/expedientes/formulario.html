@@ -1,36 +1,163 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Formulario Expediente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes fade-in-down {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in-down {
+            animation: fade-in-down 0.6s ease-out;
+        }
+
+        @keyframes click-bounce {
+            0%   { transform: scale(0.97) rotate(0deg); }
+            50%  { transform: scale(0.94) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .btn-click {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-click:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-click:active {
+            animation: click-bounce 0.3s ease forwards;
+        }
+    </style>
 </head>
-<body>
-<h2 th:text="${#strings.isEmpty(id) ? 'Nuevo Expediente' : 'Editar Expediente'}"></h2>
-<form th:action="${#strings.isEmpty(id) ? '/expedientes' : '/expedientes/actualizar/' + id}" method="post">
-    <label>Número:</label>
-    <input type="text"
-           name="numero"
-           th:value="${expediente.numero}"
-           style="text-transform: uppercase;"
-           oninput="this.value = this.value.toUpperCase()"
-           required/><br/>
+<body class="bg-gradient-to-br from-blue-100 to-blue-300 min-h-screen p-8 font-sans">
 
-    <label>Descripción:</label>
-    <textarea name="descripcion" th:text="${expediente.descripcion}"></textarea><br/>
+<div class="max-w-3xl mx-auto bg-white/90 backdrop-blur-md shadow-lg rounded-2xl p-8 space-y-6 animate-fade-in-down">
 
-    <label>Fecha:</label>
-    <input type="date" name="fecha" th:value="${expediente.fecha}" required/><br/>
+    <h2 class="text-2xl font-bold text-blue-800 mb-4 text-center"
+        th:text="${#strings.isEmpty(id) ? 'Nuevo Expediente' : 'Editar Expediente'}">
+    </h2>
 
-    <label>Ubicación Física:</label>
-    <input type="text" name="ubicacionFisica" th:value="${expediente.ubicacionFisica}"/><br/>
+    <form th:action="${#strings.isEmpty(id) ? '/expedientes' : '/expedientes/actualizar/' + id}"
+          method="post" class="space-y-5" novalidate onsubmit="return validarFormulario()">
 
-    <label>Bodega:</label>
-    <select name="bodega">
-        <option value="Bodega Cocina">Bodega Cocina</option>
-        <option value="Bodega Interna">Bodega Interna</option>
-        <option value="Bodega Externa">Bodega Externa</option>
-    </select><br/>
+        <!-- Número -->
+        <div>
+            <label class="block text-blue-800 font-semibold mb-1">Número:</label>
+            <input type="text" name="numero" id="numero"
+                   th:value="${expediente.numero}"
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
+                   style="text-transform: uppercase;"
+                   oninput="this.value = this.value.toUpperCase()"
+                   required />
+            <p id="error-numero" class="text-red-600 text-sm hidden">Este campo es obligatorio.</p>
+        </div>
 
-    <button type="submit">Guardar</button>
-</form>
+        <!-- Descripción -->
+        <div>
+            <label class="block text-blue-800 font-semibold mb-1">Descripción:</label>
+            <textarea name="descripcion" id="descripcion"
+                      rows="3"
+                      th:text="${expediente.descripcion}"
+                      class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400 resize-none"
+                      required></textarea>
+            <p id="error-descripcion" class="text-red-600 text-sm hidden">Este campo es obligatorio.</p>
+        </div>
+
+        <!-- Fecha -->
+        <div>
+            <label class="block text-blue-800 font-semibold mb-1">Fecha:</label>
+            <input type="date" name="fecha" id="fecha"
+                   th:value="${expediente.fecha}"
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
+                   required />
+            <p id="error-fecha" class="text-red-600 text-sm hidden">Debe seleccionar una fecha.</p>
+        </div>
+
+        <!-- Ubicación Física -->
+        <div>
+            <label class="block text-blue-800 font-semibold mb-1">Ubicación Física:</label>
+            <input type="text" name="ubicacionFisica"
+                   th:value="${expediente.ubicacionFisica}"
+                   class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400" />
+        </div>
+
+        <!-- Bodega -->
+        <div>
+            <label class="block text-blue-800 font-semibold mb-1">Bodega:</label>
+            <select name="bodega"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400">
+                <option value="Bodega Cocina"
+                        th:selected="${expediente.bodega == 'Bodega Cocina'}">Bodega Cocina</option>
+                <option value="Bodega Interna"
+                        th:selected="${expediente.bodega == 'Bodega Interna'}">Bodega Interna</option>
+                <option value="Bodega Externa"
+                        th:selected="${expediente.bodega == 'Bodega Externa'}">Bodega Externa</option>
+            </select>
+        </div>
+
+        <!-- Botón -->
+        <div class="text-center pt-4">
+            <button type="submit"
+                    class="btn-click bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md inline-flex items-center">
+                <i class="fas fa-save mr-2"></i> Guardar Expediente
+            </button>
+        </div>
+    </form>
+
+    <div class="text-center text-xs text-blue-600 italic pt-4">
+        © 2025 Juzgado Segundo de lo Civil y Mercantil · El Salvador <br>
+        © Desarrollado por Emerson Rodas y Mario Galdamez
+    </div>
+</div>
+
+<!-- Validación con JS -->
+<script>
+    function validarFormulario() {
+        let valido = true;
+
+        const numero = document.getElementById('numero');
+        const descripcion = document.getElementById('descripcion');
+        const fecha = document.getElementById('fecha');
+
+        // Validación de número
+        if (!numero.value.trim()) {
+            document.getElementById('error-numero').classList.remove('hidden');
+            numero.classList.add('border-red-500');
+            valido = false;
+        } else {
+            document.getElementById('error-numero').classList.add('hidden');
+            numero.classList.remove('border-red-500');
+        }
+
+        // Validación de descripción
+        if (!descripcion.value.trim()) {
+            document.getElementById('error-descripcion').classList.remove('hidden');
+            descripcion.classList.add('border-red-500');
+            valido = false;
+        } else {
+            document.getElementById('error-descripcion').classList.add('hidden');
+            descripcion.classList.remove('border-red-500');
+        }
+
+        // Validación de fecha
+        if (!fecha.value) {
+            document.getElementById('error-fecha').classList.remove('hidden');
+            fecha.classList.add('border-red-500');
+            valido = false;
+        } else {
+            document.getElementById('error-fecha').classList.add('hidden');
+            fecha.classList.remove('border-red-500');
+        }
+
+        return valido;
+    }
+</script>
+
 </body>
 </html>
