@@ -23,6 +23,13 @@
     <label>Ubicación Física:</label>
     <input type="text" name="ubicacionFisica" th:value="${expediente.ubicacionFisica}"/><br/>
 
+    <label>Bodega:</label>
+    <select name="bodega">
+        <option value="Bodega Cocina">Bodega Cocina</option>
+        <option value="Bodega Interna">Bodega Interna</option>
+        <option value="Bodega Externa">Bodega Externa</option>
+    </select><br/>
+
     <button type="submit">Guardar</button>
 </form>
 </body>

@@ -46,7 +46,8 @@
         <th>Descripción</th>
         <th>Fecha</th>
         <th>Ubicación</th>
-        <th>Creador</th>
+        <th>Bodega</th>
+        <th>Creador</th> <!-- Nueva columna para la bodega -->
         <th>Acciones</th>
     </tr>
     <tr th:each="exp : ${expedientes}">
@@ -55,11 +56,11 @@
         <td th:text="${exp.fecha}">Fecha</td>
         <td th:text="${exp.ubicacionFisica}">Ubic</td>
         <td th:text="${exp.creadoPor}">User</td>
+        <td th:text="${exp.bodega}">Bodega</td> <!-- Mostrar bodega -->
         <td>
             <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}">Editar</a>
             <a th:href="@{/expedientes/eliminar/{id}(id=${exp.id})}">Eliminar</a>
         </td>
     </tr>
 </table>
-</body>
-</html>
+

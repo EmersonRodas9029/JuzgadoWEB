@@ -27,6 +27,8 @@ public class Expediente {
 
     private String ubicacionFisica;
 
+    private String bodega; // Campo añadido
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_creador_id")
     private Usuario usuarioCreador;

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +31,7 @@ public class ExpedienteService {
                         e.getDescripcion(),
                         e.getFecha(),
                         e.getUbicacionFisica(),
+                        e.getBodega(),
                         e.getUsuarioCreador() != null ? e.getUsuarioCreador().getUsername() : "N/A"
                 ))
                 .collect(Collectors.toList());
@@ -39,14 +39,14 @@ public class ExpedienteService {
 
     // Método para buscar expedientes por número
     public List<DtoExpedienteResponse> buscarPorNumero(String numero) {
-        List<Expediente> expedientes = expedienteRepository.findByNumero(numero);
-        return expedientes.stream()
+        return expedienteRepository.findByNumero(numero).stream()
                 .map(e -> new DtoExpedienteResponse(
                         e.getId(),
                         e.getNumero(),
                         e.getDescripcion(),
                         e.getFecha(),
                         e.getUbicacionFisica(),
+                        e.getBodega(),
                         e.getUsuarioCreador() != null ? e.getUsuarioCreador().getUsername() : "N/A"
                 ))
                 .collect(Collectors.toList());
@@ -60,6 +60,7 @@ public class ExpedienteService {
         e.setDescripcion(dto.descripcion());
         e.setFecha(dto.fecha());
         e.setUbicacionFisica(dto.ubicacionFisica());
+        e.setBodega(dto.bodega());
         e.setUsuarioCreador(usuario);
         expedienteRepository.save(e);
     }
@@ -71,7 +72,8 @@ public class ExpedienteService {
                 e.getNumero(),
                 e.getDescripcion(),
                 e.getFecha(),
-                e.getUbicacionFisica()
+                e.getUbicacionFisica(),
+                e.getBodega()
         );
     }
 
@@ -82,6 +84,7 @@ public class ExpedienteService {
         e.setDescripcion(dto.descripcion());
         e.setFecha(dto.fecha());
         e.setUbicacionFisica(dto.ubicacionFisica());
+        e.setBodega(dto.bodega());
         expedienteRepository.save(e);
     }
 

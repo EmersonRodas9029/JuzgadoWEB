@@ -8,5 +8,7 @@ public record DtoExpedienteResponse(
         String descripcion,
         LocalDate fecha,
         String ubicacionFisica,
-        String creadoPor
+        String creadoPor,
+        String bodega // Añadido campo de bodega
 ) {}
+
