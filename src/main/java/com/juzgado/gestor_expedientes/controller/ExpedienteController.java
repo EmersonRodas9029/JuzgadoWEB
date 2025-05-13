@@ -38,8 +38,13 @@ public class ExpedienteController {
     }
 
     @PostMapping
-    public String guardar(@ModelAttribute("expediente") DtoExpedienteRequest dto, Principal principal) {
-        expedienteService.crear(dto, principal);
+    public String guardar(@ModelAttribute("expediente") DtoExpedienteRequest dto, Principal principal, Model model) {
+        String error = expedienteService.crear(dto, principal);
+        if (error != null) {
+            model.addAttribute("error", error);  // Agregar el mensaje de error al modelo
+            model.addAttribute("expediente", dto);  // Mantener los datos del formulario
+            return "expedientes/formulario";  // Retornar al formulario con el error
+        }
         return "redirect:/expedientes";
     }
 

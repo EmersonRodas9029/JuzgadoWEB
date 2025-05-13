@@ -53,7 +53,13 @@ public class ExpedienteService {
     }
 
     // Método para crear un nuevo expediente
-    public void crear(DtoExpedienteRequest dto, Principal principal) {
+    public String crear(DtoExpedienteRequest dto, Principal principal) {
+        // Verificar si ya existe un expediente con el mismo número
+        List<Expediente> existentes = expedienteRepository.findByNumero(dto.numero());
+        if (!existentes.isEmpty()) {
+            return "Este número de expediente ya está registrado.";  // Mensaje de error si ya existe
+        }
+
         Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElse(null);
         Expediente e = new Expediente();
         e.setNumero(dto.numero());
@@ -63,6 +69,8 @@ public class ExpedienteService {
         e.setBodega(dto.bodega());
         e.setUsuarioCreador(usuario);
         expedienteRepository.save(e);
+
+        return null;  // No hay error, expediente guardado correctamente
     }
 
     // Método para obtener un expediente por su ID
@@ -93,3 +101,4 @@ public class ExpedienteService {
         expedienteRepository.deleteById(id);
     }
 }
+

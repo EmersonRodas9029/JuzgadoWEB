@@ -6,21 +6,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
-        /* Animación al cargar */
         @keyframes fade-in-down {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-fade-in-down {
-            animation: fade-in-down 0.6s ease-out;
-        }
-
-        /* Animación de clic */
         @keyframes click-bounce {
             0%   { transform: scale(0.97) rotate(0deg); }
             50%  { transform: scale(0.94) rotate(-3deg); }
             100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .animate-fade-in-down {
+            animation: fade-in-down 0.6s ease-out;
         }
 
         .btn-click {
@@ -34,11 +32,6 @@
 
         .btn-click:active {
             animation: click-bounce 0.3s ease forwards;
-        }
-
-        /* Animación de tabla completa */
-        .fade-table {
-            animation: fade-in-down 0.8s ease-in-out;
         }
     </style>
 </head>
@@ -72,17 +65,17 @@
     </form>
 
     <!-- Condición para verificar si hay expedientes encontrados -->
-    <div th:if="${expedientes != null and not #lists.isEmpty(expedientes)}" class="fade-table">
+    <div th:if="${expedientes != null and not #lists.isEmpty(expedientes)}">
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm text-blue-900 border border-blue-200 rounded-lg">
                 <thead>
                 <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider">
-                    <th class="px-4 py-3">Número de Expedientes</th>
+                    <th class="px-4 py-3">Número</th>
                     <th class="px-4 py-3 w-64">Descripción</th>
                     <th class="px-4 py-3">Fecha</th>
                     <th class="px-4 py-3">Caja</th>
-                    <th class="px-4 py-3">Creador</th>
                     <th class="px-4 py-3">Bodega</th>
+                    <th class="px-4 py-3">Creador</th>
                     <th class="px-4 py-3 text-center">Acciones</th>
                 </tr>
                 </thead>
@@ -100,11 +93,13 @@
                            title="Editar expediente">
                             <i class="fas fa-pencil-alt mr-1"></i> Editar
                         </a>
-                        <a th:href="@{/expedientes/eliminar/{id}(id=${exp.id})}"
-                           class="btn-click bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md"
-                           title="Eliminar expediente">
+                        <button type="button"
+                                onclick="confirmarEliminacion(this)"
+                                data-url="@{/expedientes/eliminar/{id}(id=${exp.id})}"
+                                class="btn-click bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md"
+                                title="Eliminar expediente">
                             <i class="fas fa-trash-alt mr-1"></i> Eliminar
-                        </a>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -122,8 +117,37 @@
         © 2025 Juzgado Segundo de lo Civil y Mercantil · El Salvador <br>
         © Desarrollado por Emerson Rodas y Mario Galdamez
     </div>
-
 </div>
+
+<!-- Modal de confirmación -->
+<div id="modalConfirmacion" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full space-y-4 animate-fade-in-down">
+        <h2 class="text-xl font-semibold text-red-700">¿Eliminar expediente?</h2>
+        <p class="text-gray-700">Esta acción no se puede deshacer. ¿Estás seguro que deseas eliminar este expediente?</p>
+        <div class="flex justify-end gap-3 pt-2">
+            <button onclick="cerrarModal()" class="btn-click bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">
+                Cancelar
+            </button>
+            <a id="btnConfirmarEliminar" href="#" class="btn-click bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                Sí, eliminar
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmarEliminacion(boton) {
+        const url = boton.getAttribute('data-url');
+        document.getElementById('btnConfirmarEliminar').setAttribute('href', url);
+        document.getElementById('modalConfirmacion').classList.remove('hidden');
+        document.getElementById('modalConfirmacion').classList.add('flex');
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalConfirmacion').classList.add('hidden');
+        document.getElementById('modalConfirmacion').classList.remove('flex');
+    }
+</script>
 
 </body>
 </html>
