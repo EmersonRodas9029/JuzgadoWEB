@@ -8,7 +8,6 @@ import com.juzgado.gestor_expedientes.repository.ExpedienteRepository;
 import com.juzgado.gestor_expedientes.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +21,6 @@ public class ExpedienteService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Método para listar todos los expedientes
     public List<DtoExpedienteResponse> listarTodos() {
         return expedienteRepository.findAll().stream()
                 .map(e -> new DtoExpedienteResponse(
@@ -37,7 +35,6 @@ public class ExpedienteService {
                 .collect(Collectors.toList());
     }
 
-    // Método para buscar expedientes por número
     public List<DtoExpedienteResponse> buscarPorNumero(String numero) {
         return expedienteRepository.findByNumero(numero).stream()
                 .map(e -> new DtoExpedienteResponse(
@@ -52,12 +49,10 @@ public class ExpedienteService {
                 .collect(Collectors.toList());
     }
 
-    // Método para crear un nuevo expediente
     public String crear(DtoExpedienteRequest dto, Principal principal) {
-        // Verificar si ya existe un expediente con el mismo número
         List<Expediente> existentes = expedienteRepository.findByNumero(dto.numero());
         if (!existentes.isEmpty()) {
-            return "Este número de expediente ya está registrado.";  // Mensaje de error si ya existe
+            return "Ya existe un expediente con ese número.";
         }
 
         Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElse(null);
@@ -70,10 +65,9 @@ public class ExpedienteService {
         e.setUsuarioCreador(usuario);
         expedienteRepository.save(e);
 
-        return null;  // No hay error, expediente guardado correctamente
+        return null;
     }
 
-    // Método para obtener un expediente por su ID
     public DtoExpedienteRequest obtenerPorId(Long id) {
         Expediente e = expedienteRepository.findById(id).orElseThrow();
         return new DtoExpedienteRequest(
@@ -85,7 +79,6 @@ public class ExpedienteService {
         );
     }
 
-    // Método para actualizar un expediente
     public void actualizar(Long id, DtoExpedienteRequest dto) {
         Expediente e = expedienteRepository.findById(id).orElseThrow();
         e.setNumero(dto.numero());
@@ -96,9 +89,7 @@ public class ExpedienteService {
         expedienteRepository.save(e);
     }
 
-    // Método para eliminar un expediente
     public void eliminar(Long id) {
         expedienteRepository.deleteById(id);
     }
 }
-

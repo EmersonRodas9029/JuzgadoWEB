@@ -32,7 +32,7 @@ public class ExpedienteController {
 
     @GetMapping("/nuevo")
     public String formularioCrear(Model model) {
-        DtoExpedienteRequest expedienteVacio = new DtoExpedienteRequest("", "", LocalDate.now(), "", ""); // Inicializar el campo bodega
+        DtoExpedienteRequest expedienteVacio = new DtoExpedienteRequest("", "", LocalDate.now(), "", "");
         model.addAttribute("expediente", expedienteVacio);
         return "expedientes/formulario";
     }
@@ -41,9 +41,9 @@ public class ExpedienteController {
     public String guardar(@ModelAttribute("expediente") DtoExpedienteRequest dto, Principal principal, Model model) {
         String error = expedienteService.crear(dto, principal);
         if (error != null) {
-            model.addAttribute("error", error);  // Agregar el mensaje de error al modelo
-            model.addAttribute("expediente", dto);  // Mantener los datos del formulario
-            return "expedientes/formulario";  // Retornar al formulario con el error
+            model.addAttribute("error", error);
+            model.addAttribute("expediente", dto);
+            return "expedientes/formulario";
         }
         return "redirect:/expedientes";
     }
