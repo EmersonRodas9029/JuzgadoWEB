@@ -70,7 +70,7 @@
             <table class="min-w-full text-sm text-blue-900 border border-blue-200 rounded-lg">
                 <thead>
                 <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider">
-                    <th class="px-4 py-3">Número</th>
+                    <th class="px-4 py-3">Número De Expediente</th>
                     <th class="px-4 py-3 w-64">Descripción</th>
                     <th class="px-4 py-3">Fecha</th>
                     <th class="px-4 py-3">Caja</th>
@@ -85,8 +85,8 @@
                     <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.descripcion}">Descripción</td>
                     <td class="px-4 py-3" th:text="${exp.fecha}">Fecha</td>
                     <td class="px-4 py-3" th:text="${exp.ubicacionFisica}">Ubicación</td>
-                    <td class="px-4 py-3" th:text="${exp.bodega}">Bodega</td>
                     <td class="px-4 py-3" th:text="${exp.creadoPor}">Usuario</td>
+                    <td class="px-4 py-3" th:text="${exp.bodega}">Bodega</td>
                     <td class="px-4 py-3 text-center space-x-3">
                         <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"
                            class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md"
@@ -94,8 +94,8 @@
                             <i class="fas fa-pencil-alt mr-1"></i> Editar
                         </a>
                         <button type="button"
+                                th:attr="data-url=@{/expedientes/eliminar/{id}(id=${exp.id})}"
                                 onclick="confirmarEliminacion(this)"
-                                data-url="@{/expedientes/eliminar/{id}(id=${exp.id})}"
                                 class="btn-click bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md"
                                 title="Eliminar expediente">
                             <i class="fas fa-trash-alt mr-1"></i> Eliminar
@@ -138,14 +138,17 @@
 <script>
     function confirmarEliminacion(boton) {
         const url = boton.getAttribute('data-url');
+        console.log("URL a eliminar:", url); // para depuración
         document.getElementById('btnConfirmarEliminar').setAttribute('href', url);
-        document.getElementById('modalConfirmacion').classList.remove('hidden');
-        document.getElementById('modalConfirmacion').classList.add('flex');
+        const modal = document.getElementById('modalConfirmacion');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
     }
 
     function cerrarModal() {
-        document.getElementById('modalConfirmacion').classList.add('hidden');
-        document.getElementById('modalConfirmacion').classList.remove('flex');
+        const modal = document.getElementById('modalConfirmacion');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
 </script>
 
