@@ -5,6 +5,7 @@
     <title>Registro - Gestor de Expedientes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Animaciones */
         @keyframes fade-in {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -33,28 +34,13 @@
 
     <h2 class="text-3xl font-bold text-center text-blue-900 mb-6">Registro de Usuario</h2>
 
-    <!-- Mensaje de éxito -->
-    <div th:if="${success}" class="bg-green-100 text-green-800 px-4 py-3 rounded-lg mb-4 text-sm font-medium">
-        <i class="fas fa-check-circle mr-2"></i>
-        <span th:text="${success}"></span>
-    </div>
-
-    <!-- Mensaje de error general -->
-    <div th:if="${error}" class="bg-red-100 text-red-800 px-4 py-3 rounded-lg mb-4 text-sm font-medium">
-        <i class="fas fa-exclamation-circle mr-2"></i>
-        <span th:text="${error}"></span>
-    </div>
-
-    <!-- Inicio del formulario -->
-    <form th:action="@{/registro}" method="post" th:object="${usuario}" class="space-y-4">
+    <form th:action="@{/registro}" method="post" th:object="${usuario}" class="space-y-4" id="registroForm">
 
         <!-- Campo usuario -->
         <div>
             <label class="block text-blue-800 font-medium mb-1">Usuario</label>
             <input type="text" th:field="*{username}" required
                    class="w-full px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"/>
-            <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
-               class="text-red-600 text-sm mt-1"></p>
         </div>
 
         <!-- Campo contraseña con ícono para ver/ocultar -->
@@ -64,56 +50,102 @@
                 <input type="password" th:field="*{password}" id="passwordInput" required
                        class="w-full px-3 py-2 pr-10 border border-blue-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"/>
                 <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 flex items-center px-3">
-                    <!-- Ícono de FontAwesome -->
                     <i id="toggleIcon" class="fa-solid fa-eye w-6 h-6 text-gray-600"></i>
                 </button>
             </div>
-            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-               class="text-red-600 text-sm mt-1"></p>
         </div>
 
         <!-- Campo rol -->
         <div>
             <label class="block text-blue-800 font-medium mb-1">Rol</label>
-            <select th:field="*{rol}"
-                    class="w-full px-3 py-2 border border-blue-300 rounded-lg bg-white focus:outline-none focus:ring focus:ring-blue-400">
+            <select th:field="*{rol}" id="rolSelect"
+                    class="w-full px-3 py-2 border border-blue-300 rounded-lg bg-white focus:outline-none focus:ring focus:ring-blue-400"
+                    onchange="verificarRol()">
                 <option value="USUARIO">USUARIO</option>
                 <option value="ADMIN">ADMIN</option>
             </select>
-            <p th:if="${#fields.hasErrors('rol')}" th:errors="*{rol}"
-               class="text-red-600 text-sm mt-1"></p>
         </div>
 
         <!-- Botón Registrar -->
-        <button type="submit"
-                class="btn-click w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition">
+        <button type="button" id="btnRegistrar" class="btn-click w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition" onclick="verificarFormulario()">
             Registrar
         </button>
     </form>
 
-    <!-- Botón Iniciar sesión -->
-    <div class="mt-4 text-center">
-        <a href="/login">
-            <button class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 rounded-lg shadow-md transition">
-                Iniciar Sesión
+    <!-- Modal para la contraseña de confirmación -->
+    <div id="modalAdmin" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-8 rounded-xl max-w-sm w-full">
+            <h3 class="text-xl font-bold text-center text-blue-800 mb-4">Confirmar Contraseña</h3>
+            <input type="password" id="adminClave" placeholder="Contraseña de confirmación" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-400 mb-4"/>
+            <button onclick="verificarClaveAdmin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md">
+                Confirmar
             </button>
-        </a>
+            <button onclick="cerrarModal()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg shadow-md mt-4">
+                Salir
+            </button>
+            <p id="errorClave" class="text-red-600 text-sm mt-4 hidden">La contraseña es incorrecta.</p>
+        </div>
     </div>
 
-    <div class="text-center text-xs text-blue-600 italic pt-4">
-        © 2025 Juzgado Segundo de lo Civil y Mercantil · El Salvador <br>
-        © Desarrollado por Emerson Rodas y Mario Galdamez
+    <!-- Botón para iniciar sesión -->
+    <div class="mt-4 text-center">
+        <a href="/login" class="text-blue-600 hover:underline">¿Ya tienes cuenta? Inicia sesión</a>
     </div>
+
 </div>
 
-<!-- Script para ver/ocultar contraseña -->
+<!-- Script para manejar los eventos -->
 <script>
+    // Función para mostrar u ocultar la contraseña
     function togglePassword() {
         const passwordInput = document.getElementById('passwordInput');
         const toggleIcon = document.getElementById('toggleIcon');
         const isPassword = passwordInput.type === 'password';
         passwordInput.type = isPassword ? 'text' : 'password';
-        toggleIcon.classList.toggle('fa-eye-slash');  // Cambia el ícono entre mostrar/ocultar
+        toggleIcon.classList.toggle('fa-eye-slash');
+    }
+
+    // Función que verifica si el rol es ADMIN
+    function verificarRol() {
+        const rol = document.getElementById('rolSelect').value;
+        if (rol === 'ADMIN') {
+            // Mostrar el modal de confirmación
+            document.getElementById('modalAdmin').classList.remove('hidden');
+            // Evitar que el formulario se envíe hasta que se confirme la contraseña
+            document.getElementById('btnRegistrar').setAttribute('type', 'button');
+        } else {
+            document.getElementById('modalAdmin').classList.add('hidden');
+            document.getElementById('btnRegistrar').setAttribute('type', 'submit');
+        }
+    }
+
+    // Función para verificar la clave y enviar el formulario si es correcta
+    function verificarClaveAdmin() {
+        const clave = document.getElementById('adminClave').value;
+        if (clave === '9029') {  // Cambiar '9029' por tu nueva contraseña
+            document.getElementById('modalAdmin').classList.add('hidden');
+            document.getElementById('registroForm').submit();
+        } else {
+            document.getElementById('errorClave').classList.remove('hidden');
+            document.getElementById('adminClave').classList.add('border-red-500');
+        }
+    }
+
+    // Función para verificar el formulario antes de enviarlo
+    function verificarFormulario() {
+        const rol = document.getElementById('rolSelect').value;
+        if (rol === 'ADMIN') {
+            // Mostrar el modal si el rol es ADMIN
+            verificarRol();
+        } else {
+            // Si el rol no es ADMIN, simplemente enviar el formulario
+            document.getElementById('registroForm').submit();
+        }
+    }
+
+    // Función para cerrar el modal
+    function cerrarModal() {
+        document.getElementById('modalAdmin').classList.add('hidden');
     }
 </script>
 
