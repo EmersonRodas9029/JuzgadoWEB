@@ -8,6 +8,7 @@ import com.juzgado.gestor_expedientes.repository.ExpedienteRepository;
 import com.juzgado.gestor_expedientes.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,14 +22,22 @@ public class ExpedienteService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // Método para listar expedientes según el rol del usuario
     public List<DtoExpedienteResponse> listarPorRol(Principal principal) {
         Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElseThrow();
 
         List<Expediente> expedientes;
+
+        // Si el usuario es ADMIN, mostrar todos los expedientes
         if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
             expedientes = expedienteRepository.findAll();
         } else {
-            expedientes = expedienteRepository.findByUsuarioCreador(usuario);
+            // Si el usuario no es ADMIN, solo mostrar los últimos 5 expedientes creados por él
+            expedientes = expedienteRepository.findByUsuarioCreador(usuario)
+                    .stream()
+                    .sorted((e1, e2) -> e2.getFecha().compareTo(e1.getFecha())) // Orden descendente por fecha
+                    .limit(5) // Limitar a los últimos 5
+                    .collect(Collectors.toList());
         }
 
         return expedientes.stream()
@@ -44,6 +53,7 @@ public class ExpedienteService {
                 .collect(Collectors.toList());
     }
 
+    // Método para buscar expedientes por número, solo los creados por el usuario actual
     public List<DtoExpedienteResponse> buscarPorNumero(String numero, Principal principal) {
         Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElseThrow();
 
@@ -70,6 +80,7 @@ public class ExpedienteService {
                 .collect(Collectors.toList());
     }
 
+    // Método para crear un expediente
     public String crear(DtoExpedienteRequest dto, Principal principal) {
         List<Expediente> existentes = expedienteRepository.findByNumero(dto.numero());
         if (!existentes.isEmpty()) {
@@ -89,6 +100,7 @@ public class ExpedienteService {
         return null;
     }
 
+    // Método para obtener un expediente por su ID
     public DtoExpedienteRequest obtenerPorId(Long id) {
         Expediente e = expedienteRepository.findById(id).orElseThrow();
         return new DtoExpedienteRequest(
@@ -100,6 +112,7 @@ public class ExpedienteService {
         );
     }
 
+    // Método para actualizar un expediente
     public void actualizar(Long id, DtoExpedienteRequest dto) {
         Expediente e = expedienteRepository.findById(id).orElseThrow();
         e.setNumero(dto.numero());
@@ -110,6 +123,7 @@ public class ExpedienteService {
         expedienteRepository.save(e);
     }
 
+    // Método para eliminar un expediente
     public void eliminar(Long id) {
         expedienteRepository.deleteById(id);
     }
