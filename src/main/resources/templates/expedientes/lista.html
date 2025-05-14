@@ -45,11 +45,19 @@
             <h1 class="text-3xl font-bold text-blue-900">Listado de Expedientes</h1>
             <p class="text-blue-700 italic text-sm">Juzgado Segundo de lo Civil y Mercantil · El Salvador</p>
         </div>
-        <a th:href="@{/expedientes/nuevo}"
-           class="btn-click bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
-           title="Crear nuevo expediente">
-            <i class="fas fa-plus-circle mr-2"></i> Nuevo Expediente
-        </a>
+        <div class="flex gap-3">
+            <a th:href="@{/expedientes/nuevo}"
+               class="btn-click bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
+               title="Crear nuevo expediente">
+                <i class="fas fa-plus-circle mr-2"></i> Nuevo Expediente
+            </a>
+            <!-- Botón para ir a la página de login -->
+            <a th:href="@{/login}"
+               class="btn-click bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
+               title="Ir al login">
+                <i class="fas fa-sign-in-alt mr-2"></i> Cerrar Sesión
+            </a>
+        </div>
     </div>
 
     <!-- Formulario de búsqueda -->
@@ -85,8 +93,8 @@
                     <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.descripcion}">Descripción</td>
                     <td class="px-4 py-3" th:text="${exp.fecha}">Fecha</td>
                     <td class="px-4 py-3" th:text="${exp.ubicacionFisica}">Ubicación</td>
-                    <td class="px-4 py-3" th:text="${exp.creadoPor}">Usuario</td>
                     <td class="px-4 py-3" th:text="${exp.bodega}">Bodega</td>
+                    <td class="px-4 py-3" th:text="${exp.creadoPor}">Usuario</td>
                     <td class="px-4 py-3 text-center space-x-3">
                         <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"
                            class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md"
