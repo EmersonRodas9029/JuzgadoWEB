@@ -19,12 +19,12 @@ public class ExpedienteController {
     private ExpedienteService expedienteService;
 
     @GetMapping
-    public String listar(@RequestParam(value = "numero", required = false) String numero, Model model) {
+    public String listar(@RequestParam(value = "numero", required = false) String numero, Model model, Principal principal) {
         List<DtoExpedienteResponse> expedientes;
         if (numero != null && !numero.isEmpty()) {
-            expedientes = expedienteService.buscarPorNumero(numero);
+            expedientes = expedienteService.buscarPorNumero(numero, principal);
         } else {
-            expedientes = expedienteService.listarTodos();
+            expedientes = expedienteService.listarPorRol(principal);
         }
         model.addAttribute("expedientes", expedientes);
         return "expedientes/lista";

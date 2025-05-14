@@ -21,8 +21,17 @@ public class ExpedienteService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public List<DtoExpedienteResponse> listarTodos() {
-        return expedienteRepository.findAll().stream()
+    public List<DtoExpedienteResponse> listarPorRol(Principal principal) {
+        Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElseThrow();
+
+        List<Expediente> expedientes;
+        if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
+            expedientes = expedienteRepository.findAll();
+        } else {
+            expedientes = expedienteRepository.findByUsuarioCreador(usuario);
+        }
+
+        return expedientes.stream()
                 .map(e -> new DtoExpedienteResponse(
                         e.getId(),
                         e.getNumero(),
@@ -35,8 +44,20 @@ public class ExpedienteService {
                 .collect(Collectors.toList());
     }
 
-    public List<DtoExpedienteResponse> buscarPorNumero(String numero) {
-        return expedienteRepository.findByNumero(numero).stream()
+    public List<DtoExpedienteResponse> buscarPorNumero(String numero, Principal principal) {
+        Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElseThrow();
+
+        List<Expediente> expedientesFiltrados;
+
+        if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
+            expedientesFiltrados = expedienteRepository.findByNumero(numero);
+        } else {
+            expedientesFiltrados = expedienteRepository.findByNumero(numero).stream()
+                    .filter(e -> e.getUsuarioCreador() != null && e.getUsuarioCreador().getId().equals(usuario.getId()))
+                    .collect(Collectors.toList());
+        }
+
+        return expedientesFiltrados.stream()
                 .map(e -> new DtoExpedienteResponse(
                         e.getId(),
                         e.getNumero(),
