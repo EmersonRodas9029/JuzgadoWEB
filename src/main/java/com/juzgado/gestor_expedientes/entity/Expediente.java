@@ -17,7 +17,7 @@ public class Expediente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false) // Se quitó unique = true
     private String numero;
 
     private String descripcion;
@@ -30,7 +30,7 @@ public class Expediente {
     private String bodega;
 
     @Column(columnDefinition = "TEXT")
-    private String observaciones; // Nuevo campo
+    private String observaciones;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_creador_id")

@@ -79,19 +79,23 @@ public class ExpedienteService {
     }
 
     public String crear(DtoExpedienteRequest dto, Principal principal) {
-        List<Expediente> existentes = expedienteRepository.findByNumeroStartingWithIgnoreCase(dto.numero());
+        Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElse(null);
+        if (usuario == null) return "Usuario no encontrado.";
+
+        // Validar número único por usuario
+        List<Expediente> existentes = expedienteRepository
+                .findByNumeroAndUsuarioCreadorUsernameIgnoreCase(dto.numero(), usuario.getUsername());
         if (!existentes.isEmpty()) {
-            return "Ya existe un expediente con ese número.";
+            return "Ya existe un expediente con ese número creado por usted.";
         }
 
-        Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElse(null);
         Expediente e = new Expediente();
         e.setNumero(dto.numero());
         e.setDescripcion(dto.descripcion());
         e.setFecha(dto.fecha());
         e.setUbicacionFisica(dto.ubicacionFisica());
         e.setBodega(dto.bodega());
-        e.setObservaciones(dto.observaciones()); // Nuevo campo
+        e.setObservaciones(dto.observaciones());
         e.setUsuarioCreador(usuario);
         expedienteRepository.save(e);
 
@@ -106,19 +110,35 @@ public class ExpedienteService {
                 e.getFecha(),
                 e.getUbicacionFisica(),
                 e.getBodega(),
-                e.getObservaciones() // Nuevo campo
+                e.getObservaciones()
         );
     }
 
-    public void actualizar(Long id, DtoExpedienteRequest dto) {
+    public String actualizar(Long id, DtoExpedienteRequest dto, Principal principal) {
         Expediente e = expedienteRepository.findById(id).orElseThrow();
+        Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElse(null);
+        if (usuario == null) return "Usuario no encontrado.";
+
+        // Validar que el nuevo número no esté repetido para este usuario (excluyendo el expediente actual)
+        List<Expediente> existentes = expedienteRepository
+                .findByNumeroAndUsuarioCreadorUsernameIgnoreCase(dto.numero(), usuario.getUsername())
+                .stream()
+                .filter(x -> !x.getId().equals(id))
+                .collect(Collectors.toList());
+
+        if (!existentes.isEmpty()) {
+            return "Ya tiene otro expediente con ese número.";
+        }
+
         e.setNumero(dto.numero());
         e.setDescripcion(dto.descripcion());
         e.setFecha(dto.fecha());
         e.setUbicacionFisica(dto.ubicacionFisica());
         e.setBodega(dto.bodega());
-        e.setObservaciones(dto.observaciones()); // Nuevo campo
+        e.setObservaciones(dto.observaciones());
         expedienteRepository.save(e);
+
+        return null;
     }
 
     public void eliminar(Long id) {

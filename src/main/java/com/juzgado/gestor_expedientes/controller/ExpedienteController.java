@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.security.Principal;
 import java.util.List;
@@ -52,8 +53,13 @@ public class ExpedienteController {
     }
 
     @PostMapping("/actualizar/{id}")
-    public String actualizar(@PathVariable Long id, @ModelAttribute("expediente") DtoExpedienteRequest dto) {
-        expedienteService.actualizar(id, dto);
+    public String actualizar(@PathVariable Long id, @ModelAttribute("expediente") DtoExpedienteRequest dto, Principal principal, Model model) {
+        String error = expedienteService.actualizar(id, dto, principal);
+        if (error != null) {
+            model.addAttribute("error", error);
+            model.addAttribute("expediente", dto);
+            return "expedientes/formulario";
+        }
         return "redirect:/expedientes";
     }
 
