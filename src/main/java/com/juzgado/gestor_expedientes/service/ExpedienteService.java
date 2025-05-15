@@ -22,7 +22,6 @@ public class ExpedienteService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Listar según el rol
     public List<DtoExpedienteResponse> listarPorRol(Principal principal) {
         Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElseThrow();
 
@@ -45,13 +44,13 @@ public class ExpedienteService {
                         e.getDescripcion(),
                         e.getFecha(),
                         e.getUbicacionFisica(),
+                        e.getUsuarioCreador() != null ? e.getUsuarioCreador().getUsername() : "N/A",
                         e.getBodega(),
-                        e.getUsuarioCreador() != null ? e.getUsuarioCreador().getUsername() : "N/A"
+                        e.getObservaciones()
                 ))
                 .collect(Collectors.toList());
     }
 
-    // Buscar por número que empieza con...
     public List<DtoExpedienteResponse> buscarPorNumero(String numero, Principal principal) {
         Usuario usuario = usuarioRepository.findByUsername(principal.getName()).orElseThrow();
 
@@ -72,13 +71,13 @@ public class ExpedienteService {
                         e.getDescripcion(),
                         e.getFecha(),
                         e.getUbicacionFisica(),
+                        e.getUsuarioCreador() != null ? e.getUsuarioCreador().getUsername() : "N/A",
                         e.getBodega(),
-                        e.getUsuarioCreador() != null ? e.getUsuarioCreador().getUsername() : "N/A"
+                        e.getObservaciones()
                 ))
                 .collect(Collectors.toList());
     }
 
-    // Crear
     public String crear(DtoExpedienteRequest dto, Principal principal) {
         List<Expediente> existentes = expedienteRepository.findByNumeroStartingWithIgnoreCase(dto.numero());
         if (!existentes.isEmpty()) {
@@ -92,13 +91,13 @@ public class ExpedienteService {
         e.setFecha(dto.fecha());
         e.setUbicacionFisica(dto.ubicacionFisica());
         e.setBodega(dto.bodega());
+        e.setObservaciones(dto.observaciones()); // Nuevo campo
         e.setUsuarioCreador(usuario);
         expedienteRepository.save(e);
 
         return null;
     }
 
-    // Obtener por ID
     public DtoExpedienteRequest obtenerPorId(Long id) {
         Expediente e = expedienteRepository.findById(id).orElseThrow();
         return new DtoExpedienteRequest(
@@ -106,11 +105,11 @@ public class ExpedienteService {
                 e.getDescripcion(),
                 e.getFecha(),
                 e.getUbicacionFisica(),
-                e.getBodega()
+                e.getBodega(),
+                e.getObservaciones() // Nuevo campo
         );
     }
 
-    // Actualizar
     public void actualizar(Long id, DtoExpedienteRequest dto) {
         Expediente e = expedienteRepository.findById(id).orElseThrow();
         e.setNumero(dto.numero());
@@ -118,10 +117,10 @@ public class ExpedienteService {
         e.setFecha(dto.fecha());
         e.setUbicacionFisica(dto.ubicacionFisica());
         e.setBodega(dto.bodega());
+        e.setObservaciones(dto.observaciones()); // Nuevo campo
         expedienteRepository.save(e);
     }
 
-    // Eliminar
     public void eliminar(Long id) {
         expedienteRepository.deleteById(id);
     }

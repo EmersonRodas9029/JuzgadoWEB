@@ -82,8 +82,9 @@
                     <th class="px-4 py-3 w-64">Descripción</th>
                     <th class="px-4 py-3">Fecha</th>
                     <th class="px-4 py-3">Caja</th>
+                    <th class="px-4 py-3">Bodega</th>
+                    <th class="px-4 py-3">Observaciones</th> <!-- Nueva columna -->
                     <th class="px-4 py-3">Creador</th>
-                    <th class="px-4 py-3">Bodeja</th>
                     <th class="px-4 py-3 text-center">Acciones</th>
                 </tr>
                 </thead>
@@ -94,6 +95,7 @@
                     <td class="px-4 py-3" th:text="${exp.fecha}">Fecha</td>
                     <td class="px-4 py-3" th:text="${exp.ubicacionFisica}">Ubicación</td>
                     <td class="px-4 py-3" th:text="${exp.bodega}">Bodega</td>
+                    <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.observaciones}">Observaciones</td> <!-- Nueva columna -->
                     <td class="px-4 py-3" th:text="${exp.creadoPor}">Usuario</td>
                     <td class="px-4 py-3 text-center space-x-3">
                         <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"

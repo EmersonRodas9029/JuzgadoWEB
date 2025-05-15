@@ -20,20 +20,17 @@ public class ExpedienteController {
 
     @GetMapping
     public String listar(@RequestParam(value = "numero", required = false) String numero, Model model, Principal principal) {
-        List<DtoExpedienteResponse> expedientes;
-        if (numero != null && !numero.isEmpty()) {
-            expedientes = expedienteService.buscarPorNumero(numero, principal);
-        } else {
-            expedientes = expedienteService.listarPorRol(principal);
-        }
+        List<DtoExpedienteResponse> expedientes = (numero != null && !numero.isEmpty())
+                ? expedienteService.buscarPorNumero(numero, principal)
+                : expedienteService.listarPorRol(principal);
+
         model.addAttribute("expedientes", expedientes);
         return "expedientes/lista";
     }
 
     @GetMapping("/nuevo")
     public String formularioCrear(Model model) {
-        DtoExpedienteRequest expedienteVacio = new DtoExpedienteRequest("", "", LocalDate.now(), "", "");
-        model.addAttribute("expediente", expedienteVacio);
+        model.addAttribute("expediente", new DtoExpedienteRequest("", "", LocalDate.now(), "", "", ""));
         return "expedientes/formulario";
     }
 

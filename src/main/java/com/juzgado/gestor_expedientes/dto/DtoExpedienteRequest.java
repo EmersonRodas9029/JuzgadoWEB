@@ -7,5 +7,6 @@ public record DtoExpedienteRequest(
         String descripcion,
         LocalDate fecha,
         String ubicacionFisica,
-        String bodega // Campo añadido
+        String bodega,
+        String observaciones // Nuevo campo
 ) {}
