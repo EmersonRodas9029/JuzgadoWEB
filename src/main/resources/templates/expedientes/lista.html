@@ -51,7 +51,6 @@
                title="Crear nuevo expediente">
                 <i class="fas fa-plus-circle mr-2"></i> Nuevo Expediente
             </a>
-            <!-- Botón para ir a la página de login -->
             <a th:href="@{/login}"
                class="btn-click bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
                title="Ir al login">
@@ -72,30 +71,35 @@
         </button>
     </form>
 
-    <!-- Condición para verificar si hay expedientes encontrados -->
+    <!-- Tabla de resultados -->
     <div th:if="${expedientes != null and not #lists.isEmpty(expedientes)}">
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm text-blue-900 border border-blue-200 rounded-lg">
                 <thead>
                 <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider">
+                    <th class="px-4 py-3">✔</th> <!-- Nueva columna -->
                     <th class="px-4 py-3">Número De Expediente</th>
                     <th class="px-4 py-3 w-64">Descripción</th>
                     <th class="px-4 py-3">Fecha</th>
                     <th class="px-4 py-3">Caja</th>
                     <th class="px-4 py-3">Bodega</th>
-                    <th class="px-4 py-3">Observaciones</th> <!-- Nueva columna -->
+                    <th class="px-4 py-3">Observaciones</th>
                     <th class="px-4 py-3">Creador</th>
                     <th class="px-4 py-3 text-center">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="exp : ${expedientes}" class="even:bg-blue-50 odd:bg-white border-b border-blue-100 hover:bg-blue-100 transition animate-fade-in-down">
+                <tr th:each="exp : ${expedientes}" th:attr="data-id=${exp.id}"
+                    class="even:bg-blue-50 odd:bg-white border-b border-blue-100 hover:bg-blue-100 transition animate-fade-in-down">
+                    <td class="px-4 py-3 text-center">
+                        <input type="checkbox" class="checkbox-expediente" th:attr="data-id=${exp.id}">
+                    </td>
                     <td class="px-4 py-3" th:text="${exp.numero}">N°</td>
                     <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.descripcion}">Descripción</td>
                     <td class="px-4 py-3" th:text="${exp.fecha}">Fecha</td>
                     <td class="px-4 py-3" th:text="${exp.ubicacionFisica}">Ubicación</td>
                     <td class="px-4 py-3" th:text="${exp.bodega}">Bodega</td>
-                    <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.observaciones}">Observaciones</td> <!-- Nueva columna -->
+                    <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.observaciones}">Observaciones</td>
                     <td class="px-4 py-3" th:text="${exp.creadoPor}">Usuario</td>
                     <td class="px-4 py-3 text-center space-x-3">
                         <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"
@@ -145,10 +149,10 @@
     </div>
 </div>
 
+<!-- Script para eliminar -->
 <script>
     function confirmarEliminacion(boton) {
         const url = boton.getAttribute('data-url');
-        console.log("URL a eliminar:", url); // para depuración
         document.getElementById('btnConfirmarEliminar').setAttribute('href', url);
         const modal = document.getElementById('modalConfirmacion');
         modal.classList.remove('hidden');
@@ -160,6 +164,34 @@
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
+</script>
+
+<!-- Script para persistir checkboxes con localStorage -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const checkboxes = document.querySelectorAll('.checkbox-expediente');
+        const marcados = JSON.parse(localStorage.getItem('expedientesMarcados') || '[]');
+
+        checkboxes.forEach(checkbox => {
+            const id = checkbox.dataset.id;
+
+            if (marcados.includes(id)) {
+                checkbox.checked = true;
+            }
+
+            checkbox.addEventListener('change', () => {
+                const index = marcados.indexOf(id);
+
+                if (checkbox.checked && index === -1) {
+                    marcados.push(id);
+                } else if (!checkbox.checked && index !== -1) {
+                    marcados.splice(index, 1);
+                }
+
+                localStorage.setItem('expedientesMarcados', JSON.stringify(marcados));
+            });
+        });
+    });
 </script>
 
 </body>
