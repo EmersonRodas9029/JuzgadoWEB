@@ -77,6 +77,7 @@
             <table class="min-w-[1200px] w-full table-fixed text-sm text-blue-900 border border-blue-300 rounded-lg">
                 <thead>
                 <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider text-center">
+                    <th class="border border-blue-300 px-4 py-3 w-12 align-middle">salio</th>
                     <th class="border border-blue-300 px-4 py-3 w-48 align-middle">N° Expediente</th>
                     <th class="border border-blue-300 px-4 py-3 w-80 align-middle">Descripción</th>
                     <th class="border border-blue-300 px-4 py-3 w-40 align-middle">Fecha</th>
@@ -89,6 +90,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="exp : ${expedientes}" class="even:bg-blue-50 odd:bg-white border-b border-blue-100 hover:bg-blue-100 transition">
+                    <td class="border border-blue-300 px-4 py-3 text-center align-middle">
+                        <input type="checkbox" name="expedienteSeleccionado" th:value="${exp.id}" class="accent-blue-600 w-4 h-4">
+                    </td>
                     <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.numero}">N°</td>
                     <td class="border border-blue-300 px-4 py-3 break-words text-center align-middle" th:text="${exp.descripcion}">Descripción</td>
                     <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.fecha}">Fecha</td>
@@ -146,6 +150,7 @@
     </div>
 </div>
 
+<!-- Scripts -->
 <script>
     function confirmarEliminacion(boton) {
         const url = boton.getAttribute('data-url');
@@ -160,31 +165,47 @@
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
+
+    // Mantener selección de checkboxes usando localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkboxes = document.querySelectorAll('input[name="expedienteSeleccionado"]');
+        const selectedIds = JSON.parse(localStorage.getItem('expedientesSeleccionados') || '[]');
+
+        checkboxes.forEach(cb => {
+            if (selectedIds.includes(cb.value)) {
+                cb.checked = true;
+            }
+
+            cb.addEventListener('change', () => {
+                let seleccionados = JSON.parse(localStorage.getItem('expedientesSeleccionados') || '[]');
+
+                if (cb.checked && !seleccionados.includes(cb.value)) {
+                    seleccionados.push(cb.value);
+                } else if (!cb.checked && seleccionados.includes(cb.value)) {
+                    seleccionados = seleccionados.filter(id => id !== cb.value);
+                }
+
+                localStorage.setItem('expedientesSeleccionados', JSON.stringify(seleccionados));
+            });
+        });
+    });
 </script>
 
 <script>
-    // Función para mostrar solo los primeros 20 caracteres y botón para expandir/contraer
+    // Mostrar más/menos en descripción y observaciones
     document.addEventListener('DOMContentLoaded', () => {
         const maxChars = 20;
-
-        // Columnas: 2 = Descripción, 6 = Observaciones
-        const cells = document.querySelectorAll('tbody tr td:nth-child(2), tbody tr td:nth-child(6)');
+        const cells = document.querySelectorAll('tbody tr td:nth-child(3), tbody tr td:nth-child(7)');
 
         cells.forEach(cell => {
             const fullText = cell.textContent.trim();
-
             if (fullText.length > maxChars) {
                 const truncatedText = fullText.slice(0, maxChars);
-
-                // Crear contenedor para texto
                 const spanTruncado = document.createElement('span');
                 spanTruncado.textContent = truncatedText + '... ';
-
                 const spanCompleto = document.createElement('span');
                 spanCompleto.textContent = fullText;
                 spanCompleto.style.display = 'none';
-
-                // Botón mostrar más/menos
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.textContent = 'Mostrar más';
@@ -193,7 +214,6 @@
                 btn.style.border = 'none';
                 btn.style.cursor = 'pointer';
                 btn.style.padding = '0';
-
                 btn.onclick = () => {
                     if (btn.textContent === 'Mostrar más') {
                         spanTruncado.style.display = 'none';
@@ -205,8 +225,6 @@
                         btn.textContent = 'Mostrar más';
                     }
                 };
-
-                // Limpiar celda y agregar elementos
                 cell.textContent = '';
                 cell.appendChild(spanTruncado);
                 cell.appendChild(spanCompleto);
