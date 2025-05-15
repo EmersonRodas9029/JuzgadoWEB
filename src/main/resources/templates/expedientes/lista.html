@@ -71,49 +71,46 @@
         </button>
     </form>
 
-    <!-- Tabla de resultados -->
+    <!-- Tabla de expedientes -->
     <div th:if="${expedientes != null and not #lists.isEmpty(expedientes)}">
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm text-blue-900 border border-blue-200 rounded-lg">
+            <table class="min-w-[1200px] w-full table-fixed text-sm text-blue-900 border border-blue-300 rounded-lg">
                 <thead>
-                <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider">
-                    <th class="px-4 py-3">✔</th> <!-- Nueva columna -->
-                    <th class="px-4 py-3">Número De Expediente</th>
-                    <th class="px-4 py-3 w-64">Descripción</th>
-                    <th class="px-4 py-3">Fecha</th>
-                    <th class="px-4 py-3">Caja</th>
-                    <th class="px-4 py-3">Bodega</th>
-                    <th class="px-4 py-3">Observaciones</th>
-                    <th class="px-4 py-3">Creador</th>
-                    <th class="px-4 py-3 text-center">Acciones</th>
+                <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider text-center">
+                    <th class="border border-blue-300 px-4 py-3 w-48 align-middle">N° Expediente</th>
+                    <th class="border border-blue-300 px-4 py-3 w-80 align-middle">Descripción</th>
+                    <th class="border border-blue-300 px-4 py-3 w-40 align-middle">Fecha</th>
+                    <th class="border border-blue-300 px-4 py-3 w-32 align-middle">Caja</th>
+                    <th class="border border-blue-300 px-4 py-3 w-32 align-middle">Bodega</th>
+                    <th class="border border-blue-300 px-4 py-3 w-80 align-middle">Observaciones</th>
+                    <th class="border border-blue-300 px-4 py-3 w-40 align-middle">Creador</th>
+                    <th class="border border-blue-300 px-4 py-3 w-60 align-middle">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="exp : ${expedientes}" th:attr="data-id=${exp.id}"
-                    class="even:bg-blue-50 odd:bg-white border-b border-blue-100 hover:bg-blue-100 transition animate-fade-in-down">
-                    <td class="px-4 py-3 text-center">
-                        <input type="checkbox" class="checkbox-expediente" th:attr="data-id=${exp.id}">
-                    </td>
-                    <td class="px-4 py-3" th:text="${exp.numero}">N°</td>
-                    <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.descripcion}">Descripción</td>
-                    <td class="px-4 py-3" th:text="${exp.fecha}">Fecha</td>
-                    <td class="px-4 py-3" th:text="${exp.ubicacionFisica}">Ubicación</td>
-                    <td class="px-4 py-3" th:text="${exp.bodega}">Bodega</td>
-                    <td class="px-4 py-3 break-words max-w-xs" th:text="${exp.observaciones}">Observaciones</td>
-                    <td class="px-4 py-3" th:text="${exp.creadoPor}">Usuario</td>
-                    <td class="px-4 py-3 text-center space-x-3">
-                        <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"
-                           class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md"
-                           title="Editar expediente">
-                            <i class="fas fa-pencil-alt mr-1"></i> Editar
-                        </a>
-                        <button type="button"
-                                th:attr="data-url=@{/expedientes/eliminar/{id}(id=${exp.id})}"
-                                onclick="confirmarEliminacion(this)"
-                                class="btn-click bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md"
-                                title="Eliminar expediente">
-                            <i class="fas fa-trash-alt mr-1"></i> Eliminar
-                        </button>
+                <tr th:each="exp : ${expedientes}" class="even:bg-blue-50 odd:bg-white border-b border-blue-100 hover:bg-blue-100 transition">
+                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.numero}">N°</td>
+                    <td class="border border-blue-300 px-4 py-3 break-words text-center align-middle" th:text="${exp.descripcion}">Descripción</td>
+                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.fecha}">Fecha</td>
+                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.ubicacionFisica}">Caja</td>
+                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.bodega}">Bodega</td>
+                    <td class="border border-blue-300 px-4 py-3 break-words text-center align-middle" th:text="${exp.observaciones}">Observaciones</td>
+                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.creadoPor}">Usuario</td>
+                    <td class="border border-blue-300 px-4 py-3 text-center align-middle">
+                        <div class="flex justify-center gap-2 flex-wrap">
+                            <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"
+                               class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-md"
+                               title="Editar expediente">
+                                <i class="fas fa-pencil-alt mr-1"></i> Editar
+                            </a>
+                            <button type="button"
+                                    th:attr="data-url=@{/expedientes/eliminar/{id}(id=${exp.id})}"
+                                    onclick="confirmarEliminacion(this)"
+                                    class="btn-click bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg shadow-md"
+                                    title="Eliminar expediente">
+                                <i class="fas fa-trash-alt mr-1"></i> Eliminar
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -121,7 +118,7 @@
         </div>
     </div>
 
-    <!-- Mensaje si no se encontraron resultados -->
+    <!-- Mensaje si no hay resultados -->
     <div th:if="${expedientes == null or #lists.isEmpty(expedientes)}" class="text-center text-xl text-red-600">
         No se encontraron expedientes con ese número.
     </div>
@@ -149,7 +146,6 @@
     </div>
 </div>
 
-<!-- Script para eliminar -->
 <script>
     function confirmarEliminacion(boton) {
         const url = boton.getAttribute('data-url');
@@ -166,30 +162,56 @@
     }
 </script>
 
-<!-- Script para persistir checkboxes con localStorage -->
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const checkboxes = document.querySelectorAll('.checkbox-expediente');
-        const marcados = JSON.parse(localStorage.getItem('expedientesMarcados') || '[]');
+    // Función para mostrar solo los primeros 20 caracteres y botón para expandir/contraer
+    document.addEventListener('DOMContentLoaded', () => {
+        const maxChars = 20;
 
-        checkboxes.forEach(checkbox => {
-            const id = checkbox.dataset.id;
+        // Columnas: 2 = Descripción, 6 = Observaciones
+        const cells = document.querySelectorAll('tbody tr td:nth-child(2), tbody tr td:nth-child(6)');
 
-            if (marcados.includes(id)) {
-                checkbox.checked = true;
+        cells.forEach(cell => {
+            const fullText = cell.textContent.trim();
+
+            if (fullText.length > maxChars) {
+                const truncatedText = fullText.slice(0, maxChars);
+
+                // Crear contenedor para texto
+                const spanTruncado = document.createElement('span');
+                spanTruncado.textContent = truncatedText + '... ';
+
+                const spanCompleto = document.createElement('span');
+                spanCompleto.textContent = fullText;
+                spanCompleto.style.display = 'none';
+
+                // Botón mostrar más/menos
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = 'Mostrar más';
+                btn.className = 'btn-click text-blue-600 underline';
+                btn.style.background = 'none';
+                btn.style.border = 'none';
+                btn.style.cursor = 'pointer';
+                btn.style.padding = '0';
+
+                btn.onclick = () => {
+                    if (btn.textContent === 'Mostrar más') {
+                        spanTruncado.style.display = 'none';
+                        spanCompleto.style.display = 'inline';
+                        btn.textContent = 'Mostrar menos';
+                    } else {
+                        spanTruncado.style.display = 'inline';
+                        spanCompleto.style.display = 'none';
+                        btn.textContent = 'Mostrar más';
+                    }
+                };
+
+                // Limpiar celda y agregar elementos
+                cell.textContent = '';
+                cell.appendChild(spanTruncado);
+                cell.appendChild(spanCompleto);
+                cell.appendChild(btn);
             }
-
-            checkbox.addEventListener('change', () => {
-                const index = marcados.indexOf(id);
-
-                if (checkbox.checked && index === -1) {
-                    marcados.push(id);
-                } else if (!checkbox.checked && index !== -1) {
-                    marcados.splice(index, 1);
-                }
-
-                localStorage.setItem('expedientesMarcados', JSON.stringify(marcados));
-            });
         });
     });
 </script>
