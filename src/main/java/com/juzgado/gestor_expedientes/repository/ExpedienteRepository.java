@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ExpedienteRepository extends JpaRepository<Expediente, Long> {
-    List<Expediente> findByNumero(String numero); // Buscar por número
-    List<Expediente> findByUsuarioCreador(Usuario usuario); // Buscar por usuario creador
+    // Buscar expedientes que comienzan con un número (ignorando mayúsculas)
+    List<Expediente> findByNumeroStartingWithIgnoreCase(String numero);
+
+    // Buscar expedientes creados por un usuario específico
+    List<Expediente> findByUsuarioCreador(Usuario usuario);
 }
