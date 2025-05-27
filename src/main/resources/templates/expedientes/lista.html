@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Expedientes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
@@ -35,38 +36,36 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-100 to-blue-300 min-h-screen p-8 font-sans">
+<body class="bg-gradient-to-br from-blue-100 to-blue-300 min-h-screen p-4 sm:p-8 font-sans">
 
-<div class="max-w-7xl mx-auto bg-white/90 backdrop-blur-md shadow-xl rounded-2xl p-8 space-y-6 animate-fade-in-down">
+<div class="max-w-7xl mx-auto bg-white/90 backdrop-blur-md shadow-xl rounded-2xl p-4 sm:p-8 space-y-6 animate-fade-in-down">
 
     <!-- Encabezado -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-blue-900">Listado de Expedientes</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-blue-900">Listado de Expedientes</h1>
             <p class="text-blue-700 italic text-sm">Juzgado Segundo de lo Civil y Mercantil · El Salvador</p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <a th:href="@{/expedientes/nuevo}"
-               class="btn-click bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
-               title="Crear nuevo expediente">
+               class="btn-click bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-center">
                 <i class="fas fa-plus-circle mr-2"></i> Nuevo Expediente
             </a>
             <a th:href="@{/login}"
-               class="btn-click bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md"
-               title="Ir al login">
+               class="btn-click bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-center">
                 <i class="fas fa-sign-in-alt mr-2"></i> Cerrar Sesión
             </a>
         </div>
     </div>
 
     <!-- Formulario de búsqueda -->
-    <form action="#" method="get" class="flex items-center gap-4">
+    <form action="#" method="get" class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
         <label for="numero" class="text-blue-800 font-medium">Buscar por Número:</label>
         <input type="text" id="numero" name="numero"
-               class="px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-400 w-64"
+               class="px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-400 w-full sm:w-64"
                placeholder="Ej.0000">
         <button type="submit"
-                class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md">
+                class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-md w-full sm:w-auto">
             <i class="fas fa-search mr-1"></i> Buscar
         </button>
     </form>
@@ -74,44 +73,42 @@
     <!-- Tabla de expedientes -->
     <div th:if="${expedientes != null and not #lists.isEmpty(expedientes)}">
         <div class="overflow-x-auto">
-            <table class="min-w-[1200px] w-full table-fixed text-sm text-blue-900 border border-blue-300 rounded-lg">
+            <table class="min-w-full text-sm text-blue-900 border border-blue-300 rounded-lg">
                 <thead>
                 <tr class="bg-blue-200 text-blue-800 uppercase text-xs tracking-wider text-center">
-                    <th class="border border-blue-300 px-1 py-1 w-12 align-middle">salio</th>
-                    <th class="border border-blue-300 px-4 py-3 w-48 align-middle">N° Expediente</th>
-                    <th class="border border-blue-300 px-4 py-3 w-80 align-middle">Descripción</th>
-                    <th class="border border-blue-300 px-4 py-3 w-40 align-middle">Fecha</th>
-                    <th class="border border-blue-300 px-4 py-3 w-32 align-middle">Caja</th>
-                    <th class="border border-blue-300 px-4 py-3 w-32 align-middle">Bodega</th>
-                    <th class="border border-blue-300 px-4 py-3 w-80 align-middle">Observaciones</th>
-                    <th class="border border-blue-300 px-4 py-3 w-40 align-middle">Creador</th>
-                    <th class="border border-blue-300 px-4 py-3 w-60 align-middle">Acciones</th>
+                    <th class="border border-blue-300 px-1 py-1 align-middle">Salió</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">N° Expediente</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">Descripción</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">Fecha</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">Caja</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">Bodega</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">Observaciones</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">Creador</th>
+                    <th class="border border-blue-300 px-4 py-3 align-middle">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="exp : ${expedientes}" class="even:bg-blue-50 odd:bg-white border-b border-blue-100 hover:bg-blue-100 transition">
-                    <td class="border border-blue-300 px-4 py-3 text-center align-middle">
+                    <td class="border border-blue-300 px-2 py-2 text-center align-middle">
                         <input type="checkbox" name="expedienteSeleccionado" th:value="${exp.id}" class="accent-blue-600 w-4 h-4">
                     </td>
-                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.numero}">N°</td>
-                    <td class="border border-blue-300 px-4 py-3 break-words text-center align-middle" th:text="${exp.descripcion}">Descripción</td>
-                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.fecha}">Fecha</td>
-                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.ubicacionFisica}">Caja</td>
-                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.bodega}">Bodega</td>
-                    <td class="border border-blue-300 px-4 py-3 break-words text-center align-middle" th:text="${exp.observaciones}">Observaciones</td>
-                    <td class="border border-blue-300 px-4 py-3 text-center align-middle" th:text="${exp.creadoPor}">Usuario</td>
-                    <td class="border border-blue-300 px-4 py-3 text-center align-middle">
-                        <div class="flex justify-center gap-2 flex-wrap">
+                    <td class="border border-blue-300 px-4 py-2 text-center align-middle" th:text="${exp.numero}">N°</td>
+                    <td class="border border-blue-300 px-4 py-2 break-words text-center align-middle" th:text="${exp.descripcion}">Descripción</td>
+                    <td class="border border-blue-300 px-4 py-2 text-center align-middle" th:text="${exp.fecha}">Fecha</td>
+                    <td class="border border-blue-300 px-4 py-2 text-center align-middle" th:text="${exp.ubicacionFisica}">Caja</td>
+                    <td class="border border-blue-300 px-4 py-2 text-center align-middle" th:text="${exp.bodega}">Bodega</td>
+                    <td class="border border-blue-300 px-4 py-2 break-words text-center align-middle" th:text="${exp.observaciones}">Observaciones</td>
+                    <td class="border border-blue-300 px-4 py-2 text-center align-middle" th:text="${exp.creadoPor}">Usuario</td>
+                    <td class="border border-blue-300 px-4 py-2 text-center align-middle">
+                        <div class="flex flex-col sm:flex-row justify-center gap-2">
                             <a th:href="@{/expedientes/editar/{id}(id=${exp.id})}"
-                               class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-md"
-                               title="Editar expediente">
+                               class="btn-click bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-md text-center">
                                 <i class="fas fa-pencil-alt mr-1"></i> Editar
                             </a>
                             <button type="button"
                                     th:attr="data-url=@{/expedientes/eliminar/{id}(id=${exp.id})}"
                                     onclick="confirmarEliminacion(this)"
-                                    class="btn-click bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg shadow-md"
-                                    title="Eliminar expediente">
+                                    class="btn-click bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg shadow-md text-center">
                                 <i class="fas fa-trash-alt mr-1"></i> Eliminar
                             </button>
                         </div>
@@ -122,7 +119,7 @@
         </div>
     </div>
 
-    <!-- Mensaje si no hay resultados -->
+    <!-- Sin resultados -->
     <div th:if="${expedientes == null or #lists.isEmpty(expedientes)}" class="text-center text-xl text-red-600">
         No se encontraron expedientes con ese número.
     </div>
